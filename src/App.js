@@ -20,8 +20,8 @@ function App() {
           <Col lg={12} style={marginTop}>
           <Switch>
               <Route path="/" exact component={Welcome} />
-              <Route path="/add" exact component={Company} />
-              <Route path="/list" exact component={CompanyList} />
+              <Route path="/add-company" exact component={Company} />
+              <Route path="/company-list" exact component={CompanyList} />
               
             </Switch>
             
