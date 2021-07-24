@@ -6,6 +6,7 @@ import Welcome from './components/Welcome';
 import CompanyList from './components/CompanyList';
 import Company from './components/Company';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
+import ImportStock from './components/ImportStock';
 
 function App() {
   const marginTop={
@@ -23,6 +24,7 @@ function App() {
               <Route path="/add-company" exact component={Company} />
               <Route path="/company-list" exact component={CompanyList} />
               <Route path="/edit/:id" exact component={Company} />
+              <Route path="/import-stocks" exact component={ImportStock}/> 
             </Switch>
             
           </Col>
