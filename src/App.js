@@ -22,7 +22,7 @@ function App() {
               <Route path="/" exact component={Welcome} />
               <Route path="/add-company" exact component={Company} />
               <Route path="/company-list" exact component={CompanyList} />
-              
+              <Route path="/edit/:id" exact component={Company} />
             </Switch>
             
           </Col>
