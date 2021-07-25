@@ -1,276 +1,287 @@
-import React from "react";
+import React,{Component} from "react";
 import * as XLSX from "xlsx";
-
-function ImportStock() {
+import {Card, Form, Button} from 'react-bootstrap'; 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {faDownload, faUpload, faSave} from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
+import MyToast from './MyToast';
+// function ImportStock() {
   
-  const readExcel = (file) => {
-    const promise = new Promise((resolve, reject) => {
-      const fileReader = new FileReader();
-      fileReader.readAsArrayBuffer(file);
+//   const readExcel = (file) => {
+//     const promise = new Promise((resolve, reject) => {
+//       const fileReader = new FileReader();
+//       fileReader.readAsArrayBuffer(file);
 
-      fileReader.onload = (e) => {
-        const bufferArray = e.target.result;
+//       fileReader.onload = (e) => {
+//         const bufferArray = e.target.result;
 
-        //const wb = XLSX.read(bufferArray, {type:'buffer',cellDates:true});
-        const wb = XLSX.read(bufferArray, {type:'buffer', cellDates:true, cellNF: false, cellText:false});
-        const wsname = wb.SheetNames[0];
+//         //const wb = XLSX.read(bufferArray, {type:'buffer',cellDates:true});
+//         const wb = XLSX.read(bufferArray, {type:'buffer', cellDates:true, cellNF: false, cellText:false});
+//         const wsname = wb.SheetNames[0];
 
-        const ws = wb.Sheets[wsname];
+//         const ws = wb.Sheets[wsname];
 
-        const data = XLSX.utils.sheet_to_json(ws, {raw:false,dateNF:"yyyy-mm-dd hh:mm:ss"});
+//         const data = XLSX.utils.sheet_to_json(ws, {raw:false,dateNF:"yyyy-mm-dd hh:mm:ss"});
 
-        resolve(data);
-      };
+//         resolve(data);
+//       };
 
-      fileReader.onerror = (error) => {
-        reject(error);
-      };
-    });
+//       fileReader.onerror = (error) => {
+//         reject(error);
+//       };
+//     });
 
-    promise.then((d) => {console.log("datt",d)
-        let reqBody=[];
-        let obj={};
-        d.forEach(stock => {
-            obj.compCode=stock['Company Code'];
-            obj.exchName=stock['Stock Exchange'];
-            obj.sharePrice=stock['Share Price'];
-            obj.datee=stock.Date.split(" ")[0];
-            obj.timee=stock.Time.split(" ")[1];
-            reqBody.push(obj);
+//     promise.then((d) => {console.log("datt",d)
+//         let reqBody=[];
+//         let obj={};
+//         d.forEach(stock => {
+//             obj.compCode=stock['Company Code'];
+//             obj.exchName=stock['Stock Exchange'];
+//             obj.sharePrice=stock['Share Price'];
+//             obj.datee=stock.Date.split(" ")[0];
+//             obj.timee=stock.Time.split(" ")[1];
+//             reqBody.push(obj);
+//         });
+//       console.log("dat",reqBody)
+//     });
+//   };
+
+//   return (
+//     <Card className="border border-dark bg-dark text-white" style={{ width: '30rem' }}>
+//         <Card.Header><FontAwesomeIcon icon={faDownload} />{' '}
+//         Import Stocks
+//         </Card.Header>
+        
+//         <Card.Body>
+//             <Form.Select aria-label="Default select example">
+//                 <option>Open this select menu</option>
+//                 <option value="1">One</option>
+//                 <option value="2">Two</option>
+//                 <option value="3">Three</option>
+//             </Form.Select>
+//             <Form.Select className="mt-3" aria-label="Default select example">
+//                 <option>Open this select menu</option>
+//                 <option value="1">One</option>
+//                 <option value="2">Two</option>
+//                 <option value="3">Three</option>
+//             </Form.Select>
+//             <Form.Group className="mb-3 mt-3" controlId="formGridTurnover">
+//                 <Form.Label>Company Code</Form.Label>
+//                 <Form.Control required autoComplete="off"
+//                     type="test" name="compCode"
+//                     value=""
+//                     //onChange={}
+//                     className={"bg-dark text-white"}
+//                     placeholder="Enter Company Code" />
+                
+//             </Form.Group>
+                    
+//         </Card.Body>
+//         <Card.Footer style={{"textAlign":"left"}}>
+//                 <FontAwesomeIcon icon={faUpload} />{' '}
+//                 <Form.Label>Upload Excel</Form.Label>
+//                 <Form.Control required autoComplete="off"
+//                     type="file"
+//                     onChange={(e) => {
+//                     const file = e.target.files[0];
+//                     readExcel(file);
+//                     }} />
+//                 {/* <input className="text-white"
+//                     type="file"
+//                     onChange={(e) => {
+//                     const file = e.target.files[0];
+//                     readExcel(file);
+//                     }}
+//                 /> */}
+            
+//         </Card.Footer>
+        
+//     </Card>
+//   );
+// }
+
+// export default ImportStock;
+
+export default class ImportStock extends Component{
+    constructor(props){
+        super(props);
+        this.state={
+            companies:[],
+            exchanges:[],
+            stocks:[],
+            compId:0,
+            exchId:0,
+            compCode:"",
+            show: false
+        };
+    }
+
+    componentDidMount(){
+        this.getAllCompanies();
+        this.getAllExchanges();
+    }
+
+    getAllCompanies(){
+        axios.get("http://localhost:8082/company/name")
+        .then((res)=>{console.log("compp",res.data)
+            this.setState({companies: res.data})
         });
-      console.log("dat",reqBody)
-    });
-  };
+    }
 
-  return (
-    <div>
-      <input className="text-white"
-        type="file"
-        onChange={(e) => {
-          const file = e.target.files[0];
-          readExcel(file);
-        }}
-      />
+    getAllExchanges(){
+        axios.get("http://localhost:8082/exchange/name")
+        .then((res)=>{console.log("exchh",res.data)
+            this.setState({exchanges: res.data})
+        });
+    }
 
-      
-    </div>
-  );
+    readExcel = (file) => {
+        const promise = new Promise((resolve, reject) => {
+          const fileReader = new FileReader();
+          fileReader.readAsArrayBuffer(file);
+    
+          fileReader.onload = (e) => {
+            const bufferArray = e.target.result;
+    
+            //const wb = XLSX.read(bufferArray, {type:'buffer',cellDates:true});
+            const wb = XLSX.read(bufferArray, {type:'buffer', cellDates:true, cellNF: false, cellText:false});
+            const wsname = wb.SheetNames[0];
+    
+            const ws = wb.Sheets[wsname];
+    
+            const data = XLSX.utils.sheet_to_json(ws, {raw:false,dateNF:"yyyy-mm-dd hh:mm:ss"});
+    
+            resolve(data);
+          };
+    
+          fileReader.onerror = (error) => {
+            reject(error);
+          };
+        });
+    
+        promise.then((d) => {
+            this.setState({compCode: d[0]['Company Code']});
+            
+            let obj={};
+            d.forEach(stock => {
+                obj.compCode=stock['Company Code'];
+                obj.exchName=stock['Stock Exchange'];
+                obj.sharePrice=stock['Share Price'];
+                obj.datee=stock.Date.split(" ")[0];
+                obj.timee=stock.Time.split(" ")[1];
+                this.state.stocks.push(obj);
+                obj={};
+            });
+          console.log("dat",this.state.stocks);
+        });
+      };
+    
+    submitForm = (e)=>{
+        e.preventDefault();
+        const {compId, exchId, compCode} = this.state;
+        if(compId !== "0" && exchId !== "0"){console.log("statee",{compId: compId,exchId: exchId,compCode:compCode})
+            axios.post("http://localhost:8082/compExch", {compId: compId,exchId: exchId,compCode:compCode})
+            .then(response => {console.log("compExch",response)
+               return axios.post("http://localhost:8082/stocks/"+compId, this.state.stocks)
+               
+            })
+            .then(res => {
+                if(res.data !== null && res.data !== undefined){
+                    this.setState({show: true});
+                    setTimeout(()=>this.setState({show:false}),4000);
+                }
+                else{
+                    this.setState({show: false});
+                }
+                console.log("stockss",res);
+            })
+            .catch(err=>{
+                console.log("stocks err",err);
+            });
+            
+            // axios.post("http://localhost:8082/stocks/"+compId, this.state.stocks)
+            // .then(res => {
+            //     if(res.data !== null && res.data !== undefined){
+            //         this.setState({show: true});
+            //         setTimeout(()=>this.setState({show:false}),4000);
+            //     }
+            //     else{
+            //         this.setState({show: false});
+            //     }
+            //     console.log("stockss",res);
+            // })
+            // .catch(err=>{
+            //     console.log("stocks err",err);
+            // });
+
+            
+        }
+        else{
+            alert("please select")
+        }
+    }
+
+    render(){
+        
+        return (
+            <div>
+                <div style={{"display": this.state.show ? "block" : "none"}}>
+                    <MyToast show= {this.state.show} message= {`${this.state.stocks.length} stocks saved successfully.`} type={"success"}/>
+                </div>
+                <Card className="border border-dark bg-dark text-white" style={{ width: '30rem' }}>
+                    <Card.Header><FontAwesomeIcon icon={faDownload} />{' '}
+                    Import Stocks
+                    </Card.Header>
+                    <Form onSubmit={this.submitForm} id="companyNameId">
+                    <Card.Body>
+                            <Form.Select aria-label="Default select example" onChange={(e)=>this.setState({compId: e.target.value})}>
+                                <option value="0">--Select Company--</option>
+                                {this.state.companies.map((company)=>(
+                                    <option key={company.compId} value={company.compId}>
+                                        {company.compName}
+                                    </option>
+                                ))}
+                            </Form.Select>
+                            <Form.Select className="mt-3" aria-label="Default select example" onChange={(e)=>this.setState({exchId: e.target.value})}>
+                                <option value="0">--Select Stock Exchange--</option>
+                                {this.state.exchanges.map((exchange)=>(
+                                    <option key={exchange.exchId} value={exchange.exchId}>
+                                        {exchange.exchName}
+                                    </option>
+                                ))}
+                            </Form.Select>
+                            <Form.Group className="mb-3 mt-3" controlId="formGridTurnover">
+                                <Form.Label>Company Code</Form.Label>
+                                <Form.Control autoComplete="off"
+                                    type="test" name="compCode"
+                                    value={this.state.compCode}
+                                    //onChange={}
+                                    className={"bg-dark text-white"}
+                                    disabled={true}
+                                />
+                            </Form.Group>
+                        
+                    </Card.Body>
+                    <Card.Footer >
+                            <FontAwesomeIcon icon={faUpload} />{' '}
+                            <Form.Label>Upload Excel</Form.Label>
+                            <Form.Control required autoComplete="off"
+                                type="file"
+                                onChange={(e) => {
+                                const file = e.target.files[0];
+                                this.readExcel(file);
+                            }} />
+                            <div style={{"textAlign":"right"}}>
+                                <Button className="mt-3" size="sm" variant="success" type="submit">
+                                    <FontAwesomeIcon icon={faSave} />  Save
+                                </Button>
+                            </div>
+                    </Card.Footer>
+                    </Form>
+                </Card>
+            </div>
+            
+        );
+    }
 }
 
-export default ImportStock;
-
-/* xlsx.js (C) 2013-present  SheetJS -- http://sheetjs.com */
-/* Notes:
-   - usage: `ReactDOM.render( <SheetJSApp />, document.getElementById('app') );`
-   - xlsx.full.min.js is loaded in the head of the HTML page
-   - this script should be referenced with type="text/babel"
-   - babel.js in-browser transpiler should be loaded before this script
-*/
-// import React from "react";
-// import XLSX from "xlsx";
-
-// export default class ImportStock extends React.Component {
-//   constructor(props) {
-//     super(props);
-//     this.state = {
-//       data: [] /* Array of Arrays e.g. [["a","b"],[1,2]] */,
-//       cols: [] /* Array of column objects e.g. { name: "C", K: 2 } */
-//     };
-//     this.handleFile = this.handleFile.bind(this);
-//     this.exportFile = this.exportFile.bind(this);
-//   }
-//   handleFile(file /*:File*/) {
-//     /* Boilerplate to set up FileReader */
-//     const reader = new FileReader();
-//     const rABS = !!reader.readAsBinaryString;
-//     reader.onload = e => {
-//       /* Parse data */
-//       const bstr = e.target.result;
-//       const wb = XLSX.read(bstr, { type: rABS ? "binary" : "array" });
-      
-//       //const wb = XLSX.read(bstr, { type: rABS ? "binary" : "array" });
-//       /* Get first worksheet */
-//       const wsname = wb.SheetNames[0];
-//       const ws = wb.Sheets[wsname];
-//       console.log(rABS, wb);
-//       /* Convert array of arrays */
-//       const data = XLSX.utils.sheet_to_json(ws, { header: 1, raw:true});
-//       console.log(JSON.stringify(data)+"this data needs to be passed to rest endpoint to save prices");
-//       /* Update state */
-//       this.setState({ data: data, cols: make_cols(ws["!ref"]) });
-//     };
-//     if (rABS) reader.readAsBinaryString(file);
-//     else reader.readAsArrayBuffer(file);
-//   }
-//   exportFile() {
-//     /* convert state to workbook */
-//     const ws = XLSX.utils.aoa_to_sheet(this.state.data);
-//     const wb = XLSX.utils.book_new();
-//     XLSX.utils.book_append_sheet(wb, ws, "SheetJS");
-//     /* generate XLSX file and send to client */
-//     XLSX.writeFile(wb, "sheetjs.xlsx");
-//   }
-//   render() {
-//     return (
-//       <DragDropFile handleFile={this.handleFile}>
-//         <div className="row">
-//           <div className="col-xs-12">
-//             <DataInput handleFile={this.handleFile} />
-//           </div>
-//         </div>
-//         <div className="row">
-//           <div className="col-xs-12">
-//             <button
-//               disabled={!this.state.data.length}
-//               className="btn btn-success"
-//               onClick={this.exportFile}
-//             >
-//               Export
-//             </button>
-//           </div>
-//         </div>
-//         <div className="row">
-//           <div className="col-xs-12">
-//             <OutTable data={this.state.data} cols={this.state.cols} />
-//           </div>
-//         </div>
-//       </DragDropFile>
-//     );
-//   }
-// }
-
-// /* -------------------------------------------------------------------------- */
-
-// /*
-//   Simple HTML5 file drag-and-drop wrapper
-//   usage: <DragDropFile handleFile={handleFile}>...</DragDropFile>
-//     handleFile(file:File):void;
-// */
-// class DragDropFile extends React.Component {
-//   constructor(props) {
-//     super(props);
-//     this.onDrop = this.onDrop.bind(this);
-//   }
-//   suppress(evt) {
-//     evt.stopPropagation();
-//     evt.preventDefault();
-//   }
-//   onDrop(evt) {
-//     evt.stopPropagation();
-//     evt.preventDefault();
-//     const files = evt.dataTransfer.files;
-//     if (files && files[0]) this.props.handleFile(files[0]);
-//   }
-//   render() {
-//     return (
-//       <div
-//         onDrop={this.onDrop}
-//         onDragEnter={this.suppress}
-//         onDragOver={this.suppress}
-//       >
-//         {this.props.children}
-//       </div>
-//     );
-//   }
-// }
-
-// /*
-//   Simple HTML5 file input wrapper
-//   usage: <DataInput handleFile={callback} />
-//     handleFile(file:File):void;
-// */
-// class DataInput extends React.Component {
-//   constructor(props) {
-//     super(props);
-//     this.handleChange = this.handleChange.bind(this);
-//   }
-//   handleChange(e) {
-//     const files = e.target.files;
-//     if (files && files[0]) this.props.handleFile(files[0]);
-//   }
-//   render() {
-//     return (
-//       <form className="form-inline">
-//         <div className="form-group">
-//           <label htmlFor="file">Spreadsheet</label>
-//           <input
-//             type="file"
-//             className="form-control"
-//             id="file"
-//             accept={SheetJSFT}
-//             onChange={this.handleChange}
-//           />
-//         </div>
-//       </form>
-//     );
-//   }
-// }
-
-// /*
-//   Simple HTML Table
-//   usage: <OutTable data={data} cols={cols} />
-//     data:Array<Array<any> >;
-//     cols:Array<{name:string, key:number|string}>;
-// */
-// class OutTable extends React.Component {
-//   render() {
-//     return (
-//       <div className="table-responsive">
-//         <table className="table table-striped">
-//           <thead>
-//             <tr>
-//               {this.props.cols.map(c => (
-//                 <th className="text-white" key={c.key}>{c.name}</th>
-//               ))}
-//             </tr>
-//           </thead>
-//           <tbody>
-//             {this.props.data.map((r, i) => (
-//               <tr key={i}>
-//                 {this.props.cols.map(c => (
-//                   <td className="text-white" key={c.key}>{r[c.key]}</td>
-//                 ))}
-//               </tr>
-//             ))}
-//           </tbody>
-//         </table>
-//       </div>
-//     );
-//   }
-// }
-
-// /* list of supported file types */
-// const SheetJSFT = [
-//   "xlsx",
-//   "xlsb",
-//   "xlsm",
-//   "xls",
-//   "xml",
-//   "csv",
-//   "txt",
-//   "ods",
-//   "fods",
-//   "uos",
-//   "sylk",
-//   "dif",
-//   "dbf",
-//   "prn",
-//   "qpw",
-//   "123",
-//   "wb*",
-//   "wq*",
-//   "html",
-//   "htm"
-// ]
-//   .map(function(x) {
-//     return "." + x;
-//   })
-//   .join(",");
-
-// /* generate an array of column objects */
-// const make_cols = refstr => {
-//   let o = [],
-//     C = XLSX.utils.decode_range(refstr).e.c + 1;
-//   for (var i = 0; i < C; ++i) o[i] = { name: XLSX.utils.encode_col(i), key: i };
-//   return o;
-// };

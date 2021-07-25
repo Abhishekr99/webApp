@@ -35,20 +35,27 @@ export default class Company extends Component{
 
     findCompanyById = (compId) => {
         axios.get("http://localhost:8082/company/"+compId)
-        .then((res)=>{
+        .then((res)=>{console.log("compById",res)
             const {compId,compName,turnover,ceo,boardOfDirectors,compBrief}=res.data;
-            const {pricePerShare,noOfShares,openDateTime}=res.data.ipo;
-            const [openDate,openTime]=openDateTime.split("T");
-            if(res.data != null){
+            if(res.data != null && res.data.ipo === null){
+                this.setState({
+                    compId,compName,turnover,ceo,boardOfDirectors,compBrief,
+                    sectName: res.data.sector.sectName
+                })
+            }
+            else{
+                const {pricePerShare,noOfShares,openDateTime}=res.data.ipo;
+                const [openDate,openTime]=openDateTime.split("T");
                 this.setState({
                     compId,compName,turnover,ceo,boardOfDirectors,compBrief,
                     sectName: res.data.sector.sectName,
                     pricePerShare,noOfShares,openDate,openTime
                 })
             }
+            
         })
         .catch((err)=>{
-
+            console.log("compErr",err)
         })
     }
 
