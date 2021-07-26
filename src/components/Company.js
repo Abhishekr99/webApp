@@ -140,10 +140,10 @@ export default class Company extends Component{
             .catch(err=>{
                 console.log("errr",err)
             })
-
+            this.setState(this.initialState);
         }
         
-        this.setState(this.initialState);
+        
     }
 
     companyChange = (e)=>{

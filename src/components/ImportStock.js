@@ -161,7 +161,7 @@ export default class ImportStock extends Component{
     
         promise.then((d) => {
             this.setState({compCode: d[0]['Company Code']});
-            
+            let array =[];
             let obj={};
             d.forEach(stock => {
                 obj.compCode=stock['Company Code'];
@@ -169,9 +169,10 @@ export default class ImportStock extends Component{
                 obj.sharePrice=stock['Share Price'];
                 obj.datee=stock.Date.split(" ")[0];
                 obj.timee=stock.Time.split(" ")[1];
-                this.state.stocks.push(obj);
+                array.push(obj);
                 obj={};
             });
+            this.setState({stocks: [...array]});
           console.log("dat",this.state.stocks);
         });
       };

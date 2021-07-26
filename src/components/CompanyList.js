@@ -1,16 +1,18 @@
 import React,{Component} from 'react';
-import {Card, Table, ButtonGroup, Button, InputGroup, FormControl} from 'react-bootstrap'; 
+import {Card, Table, ButtonGroup, Button, InputGroup, FormControl, Accordion} from 'react-bootstrap'; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faEdit, faList, faBan, faCheckSquare, faSearch, faTimes} from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
+import IpoList from './IpoList';
 
 export default class CompanyList extends Component{
     constructor(props){
         super(props);
         this.state={
             companies:[],
-            searchTerm:''
+            searchTerm:'',
+            ipo:[]
         };
     }
 
@@ -19,9 +21,24 @@ export default class CompanyList extends Component{
     }
 
     getAllCompanies(){
+        let ipoArray=[];
+        let obj={};
         axios.get("http://localhost:8082/company")
         .then((res)=>{console.log("dataa",res.data)
-            this.setState({companies: res.data})
+            this.setState({companies: res.data});
+            res.data.map((company)=>{
+                if(company.ipo !== null){
+                    obj['compName']=company.compName;
+                    obj['pricePerShare']=company.ipo.pricePerShare;
+                    obj['noOfShares']=company.ipo.noOfShares;
+                    [obj['openDate'], obj['openTime']]=company.ipo.openDateTime.split("T");
+                    obj['ipoId']=company.ipo.ipoId;
+                    ipoArray.push(obj);
+                    obj={};
+                }
+                
+            });
+            this.setState({ipo: [...ipoArray]});
         });
     }
 
@@ -54,6 +71,8 @@ export default class CompanyList extends Component{
     render(){
         
         return (
+            <div>
+            
             <Card className="border border-dark bg-dark text-white">
                 <Card.Header>
                     {/* <FontAwesomeIcon icon={faList} /> Company List */}
@@ -135,6 +154,11 @@ export default class CompanyList extends Component{
                     </Table>
                 </Card.Body>
             </Card>
+            
+            
+            <IpoList ipos={this.state.ipo}/>
+            
+            </div>
         );
     }
 }
