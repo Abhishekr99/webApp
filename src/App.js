@@ -28,7 +28,7 @@ function App() {
               <Route path="/edit/:id" exact component={Company} />
               <Route path="/import-stocks" exact component={ImportStock}/> 
               <Route path="/stock-exchange-list" exact component={StockExchangeList}/> 
-              
+              <Route path="/ipo" exact component={IpoList}/>
             </Switch>
             
           </Col>

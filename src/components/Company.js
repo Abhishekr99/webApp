@@ -73,8 +73,8 @@ export default class Company extends Component{
                     compBrief: this.state.compBrief
                 },
                 sector: {
-                    sectName: this.state.sectName
-                    //sectBrief: this.state.sectName
+                    sectName: this.state.sectName,
+                    sectBrief: this.state.sectName
                 }
                 
     
@@ -95,8 +95,8 @@ export default class Company extends Component{
                     }
                 },
                 sector: {
-                    sectName: this.state.sectName
-                    //sectBrief: this.state.sectName
+                    sectName: this.state.sectName,
+                    sectBrief: this.state.sectName
                 }
                 
     
@@ -140,7 +140,7 @@ export default class Company extends Component{
             .catch(err=>{
                 console.log("errr",err)
             })
-            this.setState(this.initialState);
+            //this.setState(this.initialState);
         }
         
         
@@ -162,7 +162,7 @@ export default class Company extends Component{
         return (
             <div>
                 <div style={{"display": this.state.show ? "block" : "none"}}>
-                    <MyToast show= {this.state.show} message= {this.state.compId? "Company Saved Successfully." : "Company Updated Successfully."} type={"success"}/>
+                    <MyToast show= {this.state.show} message= {this.state.compId? "Company Updated Successfully." : "Company Saved Successfully."} type={"success"}/>
                 </div>
                 <Card className="border border-dark bg-dark text-white">
                     <Card.Header><FontAwesomeIcon icon={this.state.compId? faEdit : faPlusSquare} />{' '}

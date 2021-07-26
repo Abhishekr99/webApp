@@ -4,9 +4,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faEdit, faList, faBan, faCheckSquare, faSearch, faTimes} from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
-import IpoList from './IpoList';
+import {connect} from 'react-redux';
+import { fetchCompanies } from '../services/company/companyActions';
 
-export default class CompanyList extends Component{
+class CompanyList extends Component{
     constructor(props){
         super(props);
         this.state={
@@ -14,40 +15,43 @@ export default class CompanyList extends Component{
             searchTerm:'',
             ipo:[]
         };
+        
     }
 
     componentDidMount(){
-        this.getAllCompanies();
+        //this.getAllCompanies();
+        this.props.fetchCompanies();
     }
 
-    getAllCompanies(){
-        let ipoArray=[];
-        let obj={};
-        axios.get("http://localhost:8082/company")
-        .then((res)=>{console.log("dataa",res.data)
-            this.setState({companies: res.data});
-            res.data.map((company)=>{
-                if(company.ipo !== null){
-                    obj['compName']=company.compName;
-                    obj['pricePerShare']=company.ipo.pricePerShare;
-                    obj['noOfShares']=company.ipo.noOfShares;
-                    [obj['openDate'], obj['openTime']]=company.ipo.openDateTime.split("T");
-                    obj['ipoId']=company.ipo.ipoId;
-                    ipoArray.push(obj);
-                    obj={};
-                }
+    // getAllCompanies(){
+    //     let ipoArray=[];
+    //     let obj={};
+    //     axios.get("http://localhost:8082/company")
+    //     .then((res)=>{console.log("dataa",res.data)
+    //         this.setState({companies: res.data});
+    //         res.data.map((company)=>{
+    //             if(company.ipo !== null){
+    //                 obj['compName']=company.compName;
+    //                 obj['pricePerShare']=company.ipo.pricePerShare;
+    //                 obj['noOfShares']=company.ipo.noOfShares;
+    //                 [obj['openDate'], obj['openTime']]=company.ipo.openDateTime.split("T");
+    //                 obj['ipoId']=company.ipo.ipoId;
+    //                 ipoArray.push(obj);
+    //                 obj={};
+    //             }
                 
-            });
-            this.setState({ipo: [...ipoArray]});
-        });
-    }
+    //         });
+    //         this.setState({ipo: [...ipoArray]});
+    //     });
+    // }
 
     deactivateCompany = (compId)=>{
         axios.post("http://localhost:8082/company/deactivate/"+compId, {})
         .then((res)=>{
             console.log("deactivate",res);
         });
-        this.getAllCompanies();
+        this.forceUpdate();
+        //this.getAllCompanies();
     };
 
     activateCompany = (compId)=>{
@@ -55,7 +59,8 @@ export default class CompanyList extends Component{
         .then((res)=>{
             console.log("activate",res);
         });
-        this.getAllCompanies();
+        this.forceUpdate();
+        //this.getAllCompanies();
     };
 
     searchChange = (event) => {
@@ -69,7 +74,7 @@ export default class CompanyList extends Component{
     };
 
     render(){
-        
+        const companies = this.props.companies;
         return (
             <div>
             
@@ -117,11 +122,11 @@ export default class CompanyList extends Component{
                         </thead>
                         <tbody>
                             {
-                                this.state.companies.length === 0 ?
+                                companies.length === 0 ?
                                 <tr align="center">
                                     <td colSpan="6">{this.state.companies.length} Companies available</td>
                                 </tr> :
-                                this.state.companies.filter((company)=>{
+                                companies.filter((company)=>{
                                     if(this.state.searchTerm === ""){
                                         return company;
                                     }
@@ -156,9 +161,23 @@ export default class CompanyList extends Component{
             </Card>
             
             
-            <IpoList ipos={this.state.ipo}/>
+            {/* <IpoList ipos={this.state.ipo}/> */}
             
             </div>
         );
     }
 }
+
+const mapStateToProps = state => {
+    return{
+        companies: state.company.companies
+    }
+};
+
+const mapDispatchToProps = dispatch => {
+    return{
+        fetchCompanies: ()=>dispatch(fetchCompanies())
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CompanyList);
