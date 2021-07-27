@@ -72,10 +72,13 @@ export default class CompareStocks extends Component{
         //     data: dataArray
         // })
         //this.setState({category: [...labelArray]});
-        this.setState(prevState=>({
-            dataset: [...prevState.dataset, {seriesname: compName, data: dataArray}]
-            
-        }));
+        setTimeout(()=>{
+            this.setState(prevState=>({
+                dataset: [...prevState.dataset, {seriesname: compName, data: dataArray}]
+                
+            }));
+        },1000)
+        
         
         
     }
@@ -99,11 +102,13 @@ export default class CompareStocks extends Component{
             })
         })
         
+        setTimeout(()=>{
+            this.setState(prevState=>({
+                dataset: [...prevState.dataset, {seriesname: sectName, data: dataArray}]
+                
+            }));
+        },1000)
         
-        this.setState(prevState=>({
-            dataset: [...prevState.dataset, {seriesname: sectName, data: dataArray}],
-            category: [...labelArray]
-        }));
         
     }
 
