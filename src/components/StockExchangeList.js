@@ -21,7 +21,7 @@ export default class StockExchangeList extends Component{
     }
 
     getAllExchanges(){
-        axios.get("http://localhost:8082/exchange")
+        axios.get(`${process.env.REACT_APP_API_URL}/exchange`)
         .then((res)=>{console.log("dataa",res.data)
             this.setState({exchanges: res.data})
         });
@@ -37,7 +37,7 @@ export default class StockExchangeList extends Component{
         e.preventDefault();//console.log("state",this.state)
         const {exchName, exchBrief} = this.state;
         let reqBody={exchName, exchBrief};
-        axios.post("http://localhost:8082/exchange", reqBody)
+        axios.post(`${process.env.REACT_APP_API_URL}/exchange`, reqBody)
             .then(res => {
                 if(res.data !== null && res.data !== undefined){
                     this.setState({show: true});

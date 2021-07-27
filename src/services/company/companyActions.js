@@ -4,7 +4,7 @@ import axios from "axios";
 export const fetchCompanies = ()=>{
     return dispatch =>{
         dispatch(fetchCompanyRequest());
-        axios.get("http://localhost:8082/company")
+        axios.get(`${process.env.REACT_APP_API_URL}/company`)
         .then(res=>{
             dispatch(fetchCompanySuccess(res.data));
         })

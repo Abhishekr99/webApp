@@ -9,6 +9,9 @@ import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 import ImportStock from './components/ImportStock';
 import StockExchangeList from './components/StockExchangeList';
 import IpoList from './components/IpoList';
+import Login from './components/User/Login';
+import Register from './components/User/Register';
+
 
 function App() {
   const marginTop={
@@ -29,6 +32,9 @@ function App() {
               <Route path="/import-stocks" exact component={ImportStock}/> 
               <Route path="/stock-exchange-list" exact component={StockExchangeList}/> 
               <Route path="/ipo" exact component={IpoList}/>
+              <Route path="/register" exact component={Register}/> 
+              <Route path="/login" exact component={Login}/>
+              <Route path="/logout" exact component={Login}/>
             </Switch>
             
           </Col>

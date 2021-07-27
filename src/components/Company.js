@@ -34,7 +34,7 @@ export default class Company extends Component{
     }
 
     findCompanyById = (compId) => {
-        axios.get("http://localhost:8082/company/"+compId)
+        axios.get(`${process.env.REACT_APP_API_URL}/company/`+compId)
         .then((res)=>{console.log("compById",res)
             const {compId,compName,turnover,ceo,boardOfDirectors,compBrief}=res.data;
             if(res.data != null && res.data.ipo === null){
@@ -108,7 +108,7 @@ export default class Company extends Component{
             //Update company
             let updateBody=reqBody.company;
             updateBody["sector"]=reqBody.sector;
-            axios.put("http://localhost:8082/company/"+this.state.compId, updateBody)
+            axios.put(`${process.env.REACT_APP_API_URL}/company/`+this.state.compId, updateBody)
             .then(res => {
                 if(res.data !== null && res.data !== undefined){
                     this.setState({show: true});
@@ -126,7 +126,7 @@ export default class Company extends Component{
         }
         else{
             //Save company
-            axios.post("http://localhost:8082/company", reqBody)
+            axios.post(`${process.env.REACT_APP_API_URL}/company`, reqBody)
             .then(res => {
                 if(res.data !== null && res.data !== undefined){
                     this.setState({show: true});
@@ -140,7 +140,7 @@ export default class Company extends Component{
             .catch(err=>{
                 console.log("errr",err)
             })
-            //this.setState(this.initialState);
+            this.setState(this.initialState);
         }
         
         
