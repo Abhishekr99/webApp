@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Row, Col, Card, Form, InputGroup, FormControl, Button, Alert} from 'react-bootstrap';
+import {Row, Col, Card, Form, Button, Alert} from 'react-bootstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faSignInAlt, faEnvelope, faLock, faUndo} from "@fortawesome/free-solid-svg-icons";
 import { connect } from 'react-redux';
@@ -35,7 +35,7 @@ class Login extends Component{
                 this.resetLoginForm();
                 this.setState({error: 'Invalid username and password'})
             }
-        },500)
+        },1000)
     };
 
     render(){

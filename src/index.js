@@ -5,6 +5,30 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import store from './services/store';
+import axios from 'axios';
+
+axios.interceptors.request.use(request=>{
+  let token = localStorage.getItem('jwt');
+  if(token){
+    request.headers['Authorization'] = 'Bearer '+token;
+    
+  }
+  return request;
+})
+
+// axios.interceptors.request.use(async config => {
+//   const value = await redisClient.get(rediskey)
+//   const keys = JSON.parse(value)
+//   config.headers = { 
+//     'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+//     'Accept': 'application/json',
+//     'Content-Type': 'application/x-www-form-urlencoded'
+//   }
+//   return config;
+// },
+// error => {
+//   Promise.reject(error)
+// })
 
 ReactDOM.render(
   <React.StrictMode>

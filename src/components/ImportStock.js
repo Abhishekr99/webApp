@@ -5,102 +5,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faDownload, faUpload, faSave} from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import MyToast from './MyToast';
-// function ImportStock() {
-  
-//   const readExcel = (file) => {
-//     const promise = new Promise((resolve, reject) => {
-//       const fileReader = new FileReader();
-//       fileReader.readAsArrayBuffer(file);
-
-//       fileReader.onload = (e) => {
-//         const bufferArray = e.target.result;
-
-//         //const wb = XLSX.read(bufferArray, {type:'buffer',cellDates:true});
-//         const wb = XLSX.read(bufferArray, {type:'buffer', cellDates:true, cellNF: false, cellText:false});
-//         const wsname = wb.SheetNames[0];
-
-//         const ws = wb.Sheets[wsname];
-
-//         const data = XLSX.utils.sheet_to_json(ws, {raw:false,dateNF:"yyyy-mm-dd hh:mm:ss"});
-
-//         resolve(data);
-//       };
-
-//       fileReader.onerror = (error) => {
-//         reject(error);
-//       };
-//     });
-
-//     promise.then((d) => {console.log("datt",d)
-//         let reqBody=[];
-//         let obj={};
-//         d.forEach(stock => {
-//             obj.compCode=stock['Company Code'];
-//             obj.exchName=stock['Stock Exchange'];
-//             obj.sharePrice=stock['Share Price'];
-//             obj.datee=stock.Date.split(" ")[0];
-//             obj.timee=stock.Time.split(" ")[1];
-//             reqBody.push(obj);
-//         });
-//       console.log("dat",reqBody)
-//     });
-//   };
-
-//   return (
-//     <Card className="border border-dark bg-dark text-white" style={{ width: '30rem' }}>
-//         <Card.Header><FontAwesomeIcon icon={faDownload} />{' '}
-//         Import Stocks
-//         </Card.Header>
-        
-//         <Card.Body>
-//             <Form.Select aria-label="Default select example">
-//                 <option>Open this select menu</option>
-//                 <option value="1">One</option>
-//                 <option value="2">Two</option>
-//                 <option value="3">Three</option>
-//             </Form.Select>
-//             <Form.Select className="mt-3" aria-label="Default select example">
-//                 <option>Open this select menu</option>
-//                 <option value="1">One</option>
-//                 <option value="2">Two</option>
-//                 <option value="3">Three</option>
-//             </Form.Select>
-//             <Form.Group className="mb-3 mt-3" controlId="formGridTurnover">
-//                 <Form.Label>Company Code</Form.Label>
-//                 <Form.Control required autoComplete="off"
-//                     type="test" name="compCode"
-//                     value=""
-//                     //onChange={}
-//                     className={"bg-dark text-white"}
-//                     placeholder="Enter Company Code" />
-                
-//             </Form.Group>
-                    
-//         </Card.Body>
-//         <Card.Footer style={{"textAlign":"left"}}>
-//                 <FontAwesomeIcon icon={faUpload} />{' '}
-//                 <Form.Label>Upload Excel</Form.Label>
-//                 <Form.Control required autoComplete="off"
-//                     type="file"
-//                     onChange={(e) => {
-//                     const file = e.target.files[0];
-//                     readExcel(file);
-//                     }} />
-//                 {/* <input className="text-white"
-//                     type="file"
-//                     onChange={(e) => {
-//                     const file = e.target.files[0];
-//                     readExcel(file);
-//                     }}
-//                 /> */}
-            
-//         </Card.Footer>
-        
-//     </Card>
-//   );
-// }
-
-// export default ImportStock;
 
 export default class ImportStock extends Component{
     constructor(props){
@@ -122,14 +26,14 @@ export default class ImportStock extends Component{
     }
 
     getAllCompanies(){
-        axios.get("http://localhost:8082/company/name")
+        axios.get(`${process.env.REACT_APP_API_URL}/company/name`)
         .then((res)=>{console.log("compp",res.data)
             this.setState({companies: res.data})
         });
     }
 
     getAllExchanges(){
-        axios.get("http://localhost:8082/exchange/name")
+        axios.get(`${process.env.REACT_APP_API_URL}/exchange/name`)
         .then((res)=>{console.log("exchh",res.data)
             this.setState({exchanges: res.data})
         });
@@ -181,9 +85,9 @@ export default class ImportStock extends Component{
         e.preventDefault();
         const {compId, exchId, compCode} = this.state;
         if(compId !== "0" && exchId !== "0"){console.log("statee",{compId: compId,exchId: exchId,compCode:compCode})
-            axios.post("http://localhost:8082/compExch", {compId: compId,exchId: exchId,compCode:compCode})
+            axios.post(`${process.env.REACT_APP_API_URL}/compExch`, {compId: compId,exchId: exchId,compCode:compCode})
             .then(response => {console.log("compExch",response)
-               return axios.post("http://localhost:8082/stocks/"+compId, this.state.stocks)
+               return axios.post(`${process.env.REACT_APP_API_URL}/stocks/`+compId, this.state.stocks)
                
             })
             .then(res => {

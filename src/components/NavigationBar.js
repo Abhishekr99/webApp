@@ -23,12 +23,15 @@ class NavigationBar extends Component{
         const userLinks =(
             <>
                 <Nav className="me-auto">
-                    <Link to={"/add-company"} className="nav-link">Add Company</Link>
+                    {this.props.auth.role==='ROLE_ADMIN' && 
+                    <Link to={"/add-company"} className="nav-link">Add Company</Link>}
                     <Link to={"/company-list"} className="nav-link">Company List</Link>
 
                     <Link to={"/stock-exchange-list"} className="nav-link">Stock Exchange List</Link>
-                    <Link to={"/import-stocks"} className="nav-link">Import Stocks</Link>
+                    {this.props.auth.role==='ROLE_ADMIN' && 
+                    <Link to={"/import-stocks"} className="nav-link">Import Stocks</Link>}
                     <Link to={"/ipo"} className="nav-link">IPO</Link>
+                    <Link to={"/compare"} className="nav-link">Compare Stocks</Link>
                     <div >
                     <Link to={"/logout"} className="nav-link" onClick={this.logout}><FontAwesomeIcon icon={faSignOutAlt}/> Logout</Link>
                     </div>

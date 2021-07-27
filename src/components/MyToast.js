@@ -13,11 +13,11 @@ export default class MyToast extends Component{
         return (
             this.props.show &&
             <div style={this.props.show && toastCss}>
-                <Toast className={"border border-success bg-success text-white"}>
+                <Toast className={`border ${this.props.type === "success" ? "bg-success border-success" : "bg-danger border-danger"} text-white`}>
                     <Toast.Header className={`text-white ${this.props.type === "success" ? "bg-success" : "bg-danger"}`} closeButton={false}>
-                        <strong className="mr-auto">Success</strong>
+                        <strong className="mr-auto">{this.props.type === "success" ? "Success" : "Failure"}</strong>
                     </Toast.Header>
-                    <Toast.Body className={"bg-success text-white"}>
+                    <Toast.Body className={`${this.props.type === "success" ? "bg-success" : "bg-danger"} text-white`}>
                         {this.props.message}
                     </Toast.Body>
                 </Toast>

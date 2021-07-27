@@ -32,7 +32,8 @@ class IpoList extends Component {
                 obj={};
             }
         });
-        console.log("HELLO",ipoArray)
+        ipoArray.sort((a,b)=>new Date(b.openDate) -  new Date(a.openDate))
+        //console.log("ipos",ipoArray)
         this.setState({ipos: [...ipoArray]});
     };
 

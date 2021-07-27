@@ -1,11 +1,12 @@
 import React,{Component} from 'react';
 import {Card, Form, Button, Row, Col} from 'react-bootstrap'; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faEdit, faList, faPlusSquare, faSave, faUndo} from '@fortawesome/free-solid-svg-icons';
+import {faEdit, faEye, faList, faPlusSquare, faSave, faUndo} from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import MyToast from './MyToast';
+import { connect } from 'react-redux';
 
-export default class Company extends Component{
+class Company extends Component{
     constructor(props){
         super(props);
         this.state=this.initialState;
@@ -165,20 +166,23 @@ export default class Company extends Component{
                     <MyToast show= {this.state.show} message= {this.state.compId? "Company Updated Successfully." : "Company Saved Successfully."} type={"success"}/>
                 </div>
                 <Card className="border border-dark bg-dark text-white">
-                    <Card.Header><FontAwesomeIcon icon={this.state.compId? faEdit : faPlusSquare} />{' '}
-                    {this.state.compId? "Update Company" : "Add Company"}
+                    <Card.Header><FontAwesomeIcon icon={this.state.compId? (this.props.auth.role==='ROLE_ADMIN' ? faEdit:faEye) : faPlusSquare} />{' '}
+                    {this.state.compId? (this.props.auth.role==='ROLE_ADMIN' ? "Update Company":"View Company") : "Add Company"}
                     </Card.Header>
                     <Form onReset={this.resetCompany} onSubmit={this.submitCompany} id="companyFormId">
+                        
                         <Card.Body>
                                 <Row>
                                     <Form.Group as={Col} className="mb-3" controlId="formGridName">
                                         <Form.Label>Name</Form.Label>
                                         <Form.Control required autoComplete="off"
                                             type="test" name="compName"
-                                            value={compName}
+                                            value={compName} 
                                             onChange={this.companyChange}
                                             className={"bg-dark text-white"}
-                                            placeholder="Enter Company Name" />
+                                            placeholder="Enter Company Name" 
+                                            disabled={this.props.auth.role==='ROLE_USER'}
+                                        />
                                         
                                     </Form.Group>
                                     <Form.Group as={Col} className="mb-3" controlId="formGridTurnover">
@@ -188,7 +192,9 @@ export default class Company extends Component{
                                             value={turnover}
                                             onChange={this.companyChange}
                                             className={"bg-dark text-white"}
-                                            placeholder="Enter Turnover" />
+                                            placeholder="Enter Turnover" 
+                                            disabled={this.props.auth.role==='ROLE_USER'}
+                                        />
                                         
                                     </Form.Group>
                                     <Form.Group as={Col} className="mb-3" controlId="formGridCeo">
@@ -198,7 +204,9 @@ export default class Company extends Component{
                                             value={ceo}
                                             onChange={this.companyChange}
                                             className={"bg-dark text-white"}
-                                            placeholder="Enter CEO" />
+                                            placeholder="Enter CEO" 
+                                            disabled={this.props.auth.role==='ROLE_USER'}
+                                        />
                                         
                                     </Form.Group>
                                 </Row>
@@ -210,7 +218,9 @@ export default class Company extends Component{
                                             value={boardOfDirectors}
                                             onChange={this.companyChange}
                                             className={"bg-dark text-white"}
-                                            placeholder="Enter Board of Directors" />
+                                            placeholder="Enter Board of Directors" 
+                                            disabled={this.props.auth.role==='ROLE_USER'}
+                                        />
                                         
                                     </Form.Group>
                                     <Form.Group as={Col} className="mb-3" controlId="formGridSectName">
@@ -220,7 +230,9 @@ export default class Company extends Component{
                                             value={sectName}
                                             onChange={this.companyChange}
                                             className={"bg-dark text-white"}
-                                            placeholder="Enter Sector" />
+                                            placeholder="Enter Sector" 
+                                            disabled={this.props.auth.role==='ROLE_USER'}
+                                        />
                                         
                                     </Form.Group>
                                     <Form.Group as={Col} className="mb-3" controlId="formGridDescription">
@@ -230,7 +242,9 @@ export default class Company extends Component{
                                             value={compBrief}
                                             onChange={this.companyChange}
                                             className={"bg-dark text-white"}
-                                            placeholder="Enter Company Description" />
+                                            placeholder="Enter Company Description" 
+                                            disabled={this.props.auth.role==='ROLE_USER'}
+                                        />
                                         
                                     </Form.Group>
                                 </Row>
@@ -244,7 +258,9 @@ export default class Company extends Component{
                                             value={pricePerShare}
                                             onChange={this.companyChange}
                                             className={"bg-dark text-white"}
-                                            placeholder="Enter Price per Share" />
+                                            placeholder="Enter Price per Share" 
+                                            disabled={this.props.auth.role==='ROLE_USER'}
+                                        />
                                         
                                     </Form.Group>
                                     <Form.Group as={Col} className="mb-3" controlId="formGridNoOfShares">
@@ -254,7 +270,9 @@ export default class Company extends Component{
                                             value={noOfShares}
                                             onChange={this.companyChange}
                                             className={"bg-dark text-white"}
-                                            placeholder="Enter Number of Shares" />
+                                            placeholder="Enter Number of Shares" 
+                                            disabled={this.props.auth.role==='ROLE_USER'}
+                                        />
                                         
                                     </Form.Group>
                                     <Form.Group as={Col} className="mb-3" controlId="formGridOpenDate">
@@ -264,7 +282,9 @@ export default class Company extends Component{
                                             value={openDate}
                                             onChange={this.companyChange}
                                             className={"bg-dark text-white"}
-                                            placeholder="Enter Price per Share" />
+                                            placeholder="Enter Price per Share"
+                                            disabled={this.props.auth.role==='ROLE_USER'} 
+                                        />
                                         
                                     </Form.Group>
                                     <Form.Group as={Col} className="mb-3" controlId="formGridOpenTime">
@@ -274,18 +294,23 @@ export default class Company extends Component{
                                             value={openTime}
                                             onChange={this.companyChange}
                                             className={"bg-dark text-white"}
-                                            placeholder="Enter Number of Shares" />
+                                            placeholder="Enter Number of Shares" 
+                                            disabled={this.props.auth.role==='ROLE_USER'}
+                                        />
                                         
                                     </Form.Group>
                                 </Row>
                         </Card.Body>
+                        
                         <Card.Footer style={{"textAlign":"right"}}>
+                            {this.props.auth.role==='ROLE_ADMIN' &&
                             <Button size="sm" variant="success" type="submit">
                                 <FontAwesomeIcon icon={faSave} />   {this.state.compId? "Update" : "Save"}
-                            </Button>
+                            </Button>}
+                            {this.props.auth.role==='ROLE_ADMIN' &&
                             <Button style={{marginLeft: "1rem"}} size="sm" variant="info" type="reset">
                                 <FontAwesomeIcon icon={faUndo} />   Reset
-                            </Button>
+                            </Button>}
                             <Button style={{marginLeft: "1rem"}} size="sm" variant="info" type="reset" onClick={()=>this.props.history.push('/company-list')}>
                                 <FontAwesomeIcon icon={faList} />   Company List
                             </Button>
@@ -297,3 +322,11 @@ export default class Company extends Component{
         );
     }
 }
+
+const mapStateToProps = state => {
+    return{
+        auth: state.auth
+    }
+};
+
+export default connect(mapStateToProps)(Company);

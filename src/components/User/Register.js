@@ -18,8 +18,8 @@ import {
   faUserPlus,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
-//import { registerUser } from "../../services/index";
 import MyToast from "../MyToast";
+import axios from "axios";
 
 export default class Register extends Component {
   constructor(props) {
@@ -27,6 +27,7 @@ export default class Register extends Component {
     this.state = this.initialState;
     this.state.show = false;
     this.state.message = "";
+    this.state.type="";
   }
 
   initialState = {
@@ -44,24 +45,44 @@ export default class Register extends Component {
 
   registerUser = () => {
     let userObject = {
-      username: this.state.name,
+      username: this.state.username,
       email: this.state.email,
-      password: this.state.password
-      
+      password: this.state.password,
+      role:["user"]
     };
-    this.props.registerUser(userObject);
+    // this.props.registerUser(userObject);
+    axios.post(`${process.env.REACT_APP_API_URL}/api/auth/signup`, userObject)
+    .then((res)=>{
+        if (res.data.message != null) {
+            this.setState({ show: true, message: res.data.message, type: "success" });
+            setTimeout(() => {
+              this.setState({ show: false });
+              this.props.history.push("/login");
+            }, 3000);
+          } else {
+            this.setState({ show: false });
+          }
+
+    })
+    .catch((err)=>{
+        if(err.response.status === 400){
+            this.setState({ show: true, message: err.response.data.message, type: "failure" });
+            setTimeout(()=>this.setState({show:false}),3000);
+        }
+        console.log("signup err",err.response)
+    })
     this.resetRegisterForm();
-    setTimeout(() => {
-      if (this.props.user.message != null) {
-        this.setState({ show: true, message: this.props.user.message });
-        setTimeout(() => {
-          this.setState({ show: false });
-          this.props.history.push("/login");
-        }, 3000);
-      } else {
-        this.setState({ show: false });
-      }
-    }, 2000);
+    // setTimeout(() => {
+    //   if (this.props.user.message != null) {
+    //     this.setState({ show: true, message: this.props.user.message });
+    //     setTimeout(() => {
+    //       this.setState({ show: false });
+    //       this.props.history.push("/login");
+    //     }, 3000);
+    //   } else {
+    //     this.setState({ show: false });
+    //   }
+    // }, 2000);
   };
 
   resetRegisterForm = () => {
@@ -77,17 +98,20 @@ export default class Register extends Component {
           <MyToast
             show={this.state.show}
             message={this.state.message}
-            type={"success"}
+            type={this.state.type}
           />
         </div>
+        
         <Row className="justify-content-md-center">
           <Col xs={5}>
+          
             <Card className={"border border-dark bg-dark text-white"}>
               <Card.Header>
                 <FontAwesomeIcon icon={faUserPlus} /> Register
               </Card.Header>
+              
               <Card.Body>
-                
+              
                   <Form.Group as={Col}>
                     
                      <div className="input-group mb-3">
@@ -122,7 +146,7 @@ export default class Register extends Component {
                     <div className="input-group mb-3">
                         <span className="input-group-text" id="basic-addon1"><FontAwesomeIcon icon={faLock}/></span>
                         <input 
-                            type="password" required autoComplete="off"
+                            type="password" required autoComplete="off" min="6"
                             className="form-control bg-dark text-white" 
                             placeholder="Enter Password" 
                             name="password"
@@ -132,7 +156,10 @@ export default class Register extends Component {
                     
                   </Form.Group>
                 
-                
+                  {this.state.password.length < 6 && this.state.password.length > 0 &&
+                <div className="alert alert-secondary" role="alert">
+                    Password must be atleast 6 characters
+                </div>}
               </Card.Body>
               <Card.Footer style={{ textAlign: "right" }}>
                 <Button
@@ -141,8 +168,8 @@ export default class Register extends Component {
                   variant="success"
                   onClick={this.registerUser}
                   disabled={
-                    this.state.email.length === 0 ||
-                    this.state.password.length === 0
+                    this.state.email.length === 0 || this.state.username.length === 0 ||
+                    this.state.password.length < 6
                   }
                 >
                   <FontAwesomeIcon icon={faUserPlus} /> Register
@@ -155,10 +182,14 @@ export default class Register extends Component {
                 >
                   <FontAwesomeIcon icon={faUndo} /> Reset
                 </Button>
+                
               </Card.Footer>
+              
             </Card>
+            
           </Col>
         </Row>
+        
       </div>
     );
   }
@@ -176,4 +207,4 @@ export default class Register extends Component {
 //   };
 // };
 
-//export default connect(mapStateToProps, mapDispatchToProps)(Register);
+// export default Register;

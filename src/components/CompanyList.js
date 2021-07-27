@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
-import {Card, Table, ButtonGroup, Button, InputGroup, FormControl, Accordion} from 'react-bootstrap'; 
+import {Card, Table, ButtonGroup, Button, InputGroup, FormControl} from 'react-bootstrap'; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faEdit, faList, faBan, faCheckSquare, faSearch, faTimes} from '@fortawesome/free-solid-svg-icons';
+import {faEdit, faList, faBan, faCheckSquare, faTimes, faEye} from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
@@ -117,7 +117,9 @@ class CompanyList extends Component{
                             <th>Board of Directors</th>
                             <th>Sector</th>
                             <th>Description</th>
-                            <th>Actions</th>
+                            {this.props.auth.role==='ROLE_ADMIN' ?
+                            <th>Actions</th>:
+                            <th>View</th>}
                             </tr>
                         </thead>
                         <tbody>
@@ -142,6 +144,7 @@ class CompanyList extends Component{
                                         <td>{company.boardOfDirectors}</td>
                                         <td>{company.sector.sectName}</td>
                                         <td>{company.compBrief}</td>
+                                        {this.props.auth.role==='ROLE_ADMIN' ?
                                         <td>
                                             <ButtonGroup>
                                                 <Link to={"edit/"+company.compId} className="btn btn-sm btn-outline-primary"><FontAwesomeIcon icon={faEdit} /></Link>{' '} 
@@ -151,7 +154,13 @@ class CompanyList extends Component{
                                                 <Button size="sm" variant="outline-success" onClick={this.activateCompany.bind(this, company.compId)}><FontAwesomeIcon icon={faCheckSquare} /></Button>
                                                 }
                                             </ButtonGroup>
-                                        </td>
+                                        </td> :
+                                        <td>
+                                        <ButtonGroup>
+                                            <Link to={"view/"+company.compId} className="btn btn-sm btn-outline-primary"><FontAwesomeIcon icon={faEye} /></Link>{' '} 
+                                            
+                                        </ButtonGroup>
+                                    </td>}
                                     </tr>
                                 ))
                             }
@@ -170,7 +179,8 @@ class CompanyList extends Component{
 
 const mapStateToProps = state => {
     return{
-        companies: state.company.companies
+        companies: state.company.companies,
+        auth: state.auth
     }
 };
 

@@ -4,8 +4,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faSave, faList, faPlusCircle} from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import MyToast from './MyToast';
+import { connect } from 'react-redux';
 
-export default class StockExchangeList extends Component{
+class StockExchangeList extends Component{
     constructor(props){
         super(props);
         this.state={
@@ -99,6 +100,7 @@ export default class StockExchangeList extends Component{
                     </Card.Body>
                 </Card>
                 <hr/>
+                {this.props.auth.role==='ROLE_ADMIN' && 
                 <Card className="border border-dark bg-dark text-white">
                 <Card.Header>
                     {/* <FontAwesomeIcon icon={faList} /> Company List */}
@@ -143,8 +145,16 @@ export default class StockExchangeList extends Component{
                                 
                             </Card.Footer>
                 </Form>
-            </Card>
+            </Card>}
          </div>
         );
     }
 }
+
+const mapStateToProps = state => {
+    return{
+        auth: state.auth
+    }
+};
+
+export default connect(mapStateToProps)(StockExchangeList);
