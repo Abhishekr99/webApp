@@ -50,7 +50,8 @@ class CompanyList extends Component{
         .then((res)=>{
             console.log("deactivate",res);
         });
-        this.forceUpdate();
+        this.props.history.push("/deactivate")
+        // this.forceUpdate();
         //this.getAllCompanies();
     };
 
@@ -59,7 +60,8 @@ class CompanyList extends Component{
         .then((res)=>{
             console.log("activate",res);
         });
-        this.forceUpdate();
+        this.props.history.push("/deactivate")
+        // this.forceUpdate();
         //this.getAllCompanies();
     };
 

@@ -23,6 +23,7 @@ class NavigationBar extends Component{
         const userLinks =(
             <>
                 <Nav className="me-auto">
+                    
                     {this.props.auth.role==='ROLE_ADMIN' && 
                     <Link to={"/add-company"} className="nav-link">Add Company</Link>}
                     <Link to={"/company-list"} className="nav-link">Company List</Link>
@@ -32,6 +33,7 @@ class NavigationBar extends Component{
                     <Link to={"/import-stocks"} className="nav-link">Import Stocks</Link>}
                     <Link to={"/ipo"} className="nav-link">IPO</Link>
                     <Link to={"/compare"} className="nav-link">Compare Stocks</Link>
+                    <Link to={"/profile"} className="nav-link">User Profile</Link>
                     <div >
                     <Link to={"/logout"} className="nav-link" onClick={this.logout}><FontAwesomeIcon icon={faSignOutAlt}/> Logout</Link>
                     </div>

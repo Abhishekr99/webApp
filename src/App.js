@@ -13,6 +13,8 @@ import Login from './components/User/Login';
 import Register from './components/User/Register';
 import CompareStocks from './components/CompareStocks';
 import LineChart from './components/LineChart';
+import Profile from './components/User/Profile';
+import Deactivate from './components/Deactivate';
 
 
 function App() {
@@ -41,6 +43,8 @@ function App() {
               <Route path="/logout" exact component={Login}/>
               <Route path="/compare" exact component={CompareStocks}/>
               <Route path="/line" exact component={LineChart}/>
+              <Route path="/profile" exact component={Profile}/>
+              <Route path="/deactivate" exact component={Deactivate}/>
             </Switch>
             
           </Col>

@@ -51,6 +51,7 @@ class IpoList extends Component {
                     <Table bordered hover striped variant="dark">
                         <thead>
                             <tr>
+                            <th>Company Name</th>
                             <th>Price Per Share</th>
                             <th>Number of Shares</th>
                             <th>Open Date</th>
@@ -65,6 +66,7 @@ class IpoList extends Component {
                                 </tr> :
                                 this.state.ipos.map((ipo)=>(
                                     <tr key={ipo.ipoId} >
+                                        <td>{ipo.compName}</td>
                                         <td>{ipo.pricePerShare}</td>
                                         <td>{ipo.noOfShares}</td>
                                         <td>{ipo.openDate}</td>
