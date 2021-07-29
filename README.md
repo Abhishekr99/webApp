@@ -1,6 +1,6 @@
 ## Branch info:
-redux branch uses env variable REACT_APP_API_URL = http://localhost:8082 for backend API \
-deploy branch uses env variable REACT_APP_API_URL = https://stockchartify-api.herokuapp.com for backend API
+`redux branch` uses env variable REACT_APP_API_URL = http://localhost:8082 for backend API \
+`deploy branch` uses env variable REACT_APP_API_URL = https://stockchartify-api.herokuapp.com for backend API
 
 ## For running project locally:
 1] clone redux branch \
