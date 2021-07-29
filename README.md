@@ -1,6 +1,5 @@
 ## Branch info:
-`auth branch` has all the 
-`master branch` has all routes without authentication module (JWT, login, register) \
+`redux branch` uses env variable REACT_APP_API_URL = http://localhost:8082 for backend API \
 `deploy branch` uses env variable REACT_APP_API_URL = https://stockchartify-api.herokuapp.com for backend API
 
 ## For running project locally:
