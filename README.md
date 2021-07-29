@@ -10,4 +10,4 @@
 
 ## Deployed URL for frontend
 Open [https://stockchartify.herokuapp.com/](https://stockchartify.herokuapp.com/) to view it in the browser.\
-Admin credntials: (username, password) => ('admin', 'password')
+Admin credentials: (username, password) => ('admin', 'password')
