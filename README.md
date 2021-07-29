@@ -9,4 +9,5 @@
 4] Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 ## Deployed URL for frontend
-Open [https://stockchartify.herokuapp.com/](https://stockchartify.herokuapp.com/) to view it in the browser.
+Open [https://stockchartify.herokuapp.com/](https://stockchartify.herokuapp.com/) to view it in the browser.\
+Admin credntials: (username, password) => ('admin', 'password')
